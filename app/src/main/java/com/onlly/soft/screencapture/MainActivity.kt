@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button).setOnClickListener {
             CaptureUtil.captureAreaScreen(findViewById(R.id.button),
                 File(filesDir,"button.jpeg"))
+
             CaptureUtil.captureFullScreen(this,File(filesDir,"full.jpeg"))
         }
     }
