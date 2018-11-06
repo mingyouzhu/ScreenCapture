@@ -3,6 +3,7 @@ package com.onlly.soft.screencapturelib
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Rect
 import android.support.v4.view.ViewPager
 import android.view.View
 import java.io.File
@@ -16,15 +17,22 @@ object CaptureUtil {
     @Throws(IOException::class)
     fun captureFullScreen(activity:Activity,outPath:File){
         try{
-            var view:View = activity.window.decorView
+            val view = activity.window.decorView
             view.isDrawingCacheEnabled = true
             view.buildDrawingCache()
-            val bitmap = view.drawingCache
+            var b1 = view.drawingCache
+            var frame = Rect()
+            activity.window.decorView.getWindowVisibleDisplayFrame(frame)
+            var statusBarHeight = frame.top
+            val width = activity.windowManager.defaultDisplay.width
+            val height = activity.windowManager.defaultDisplay.height
+            val b = Bitmap.createBitmap(b1,0,statusBarHeight,width,height - statusBarHeight)
+            view.destroyDrawingCache()
             val fos = FileOutputStream(outPath)
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos)
+            b.compress(Bitmap.CompressFormat.JPEG,100,fos)
             fos.flush()
             fos.close()
-        }catch(e:Exception){
+        }catch (e:Exception){
             throw IOException(e.message,e.cause)
         }
     }
@@ -44,6 +52,4 @@ object CaptureUtil {
             throw IOException(e.message,e.cause)
         }
     }
-
-
 }
